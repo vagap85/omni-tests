@@ -6,9 +6,8 @@ on:
   pull_request:
     branches: [ main, master ]
   schedule:
-    # Запуск каждое утро в 9:00
     - cron: '0 9 * * *'
-  workflow_dispatch: # Ручной запуск
+  workflow_dispatch:
 
 jobs:
   test:
@@ -36,9 +35,11 @@ jobs:
         run: uv sync
 
       - name: 🌐 Установка браузеров Playwright
-        run: uv run playwright install --with-deps ${{ matrix.browser }}
+        run: |
+          uv run playwright install --with-deps ${{ matrix.browser }}
+          uv run playwright install-deps
 
-      - name: 🧪 Запуск smoke-тестов
+      - name: 🧪 Запуск тестов
         run: |
           uv run pytest -m smoke -v --browser=${{ matrix.browser }} \
             --maxfail=5 \
