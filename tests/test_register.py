@@ -186,15 +186,24 @@ class TestRegister:
     @pytest.mark.register
     def test_navigation_login_to_register(self, page):
         """Переход со страницы логина на страницу регистрации"""
+        from pages.login_page import LoginPage
+
         login_page = LoginPage(page)
         login_page.navigate()
 
+        # Кликаем на ссылку регистрации
         login_page.click_register_link()
         page.wait_for_timeout(2000)
 
-        assert "registration" in page.url or "register" in page.url
-        assert page.locator('button:has-text("Создать аккаунт")').is_visible()
-        print(f"✅ Переход с логина на регистрацию: {page.url}")
+        # Проверяем, что перешли на страницу регистрации
+        current_url = page.url
+        assert "registration" in current_url or "register" in current_url
+
+        # Проверяем, что кнопка "Создать аккаунт" видна
+        create_button = page.locator('button:has-text("Создать аккаунт")')
+        assert create_button.is_visible()
+
+        print(f"✅ Переход с логина на регистрацию: {current_url}")
 
     @pytest.mark.register
     def test_navigation_register_to_login(self, page):

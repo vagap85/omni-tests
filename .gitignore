@@ -1,10 +1,39 @@
-# Python-generated files
-__pycache__/
-*.py[oc]
-build/
-dist/
-wheels/
-*.egg-info
+# Virtual Environment
+.venv/
+venv/
+env/
 
-# Virtual environments
-.venv
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+.coverage
+
+# IDE
+.idea/
+.vscode/
+*.iml
+
+# Reports
+report.html
+report.json
+allure-results/
+allure-report/
+screenshots/
+
+# Logs
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Environment
+.env.local
+.env.*.local
+
+# Temporary files
+*.tmp
+*.temp
