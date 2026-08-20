@@ -1,0 +1,42 @@
+{
+  "dashboard": {
+    "title": "Test Results Dashboard",
+    "panels": [
+      {
+        "title": "Test Status",
+        "targets": [
+          {
+            "expr": "test_total",
+            "legendFormat": "{{status}} - {{test_name}}"
+          }
+        ]
+      },
+      {
+        "title": "Test Duration",
+        "targets": [
+          {
+            "expr": "histogram_quantile(0.95, sum(rate(test_duration_seconds_bucket[5m])) by (le, test_name))"
+          }
+        ]
+      },
+      {
+        "title": "Browser Usage",
+        "targets": [
+          {
+            "expr": "browser_usage",
+            "legendFormat": "{{browser}}"
+          }
+        ]
+      },
+      {
+        "title": "Pass/Fail Ratio",
+        "targets": [
+          {
+            "expr": "count(test_status == 1) / count(test_status) * 100",
+            "legendFormat": "Pass Rate %"
+          }
+        ]
+      }
+    ]
+  }
+}

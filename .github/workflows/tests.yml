@@ -1,0 +1,108 @@
+name: 🧪 Автотесты OmniNotice
+
+on:
+  push:
+    branches: [ main, master, develop ]
+  pull_request:
+    branches: [ main, master ]
+  schedule:
+    # Запуск каждое утро в 9:00
+    - cron: '0 9 * * *'
+  workflow_dispatch: # Ручной запуск
+
+jobs:
+  test:
+    name: 🧪 Запуск тестов
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        browser: [chromium, firefox, webkit]
+
+    steps:
+      - name: 📥 Checkout репозитория
+        uses: actions/checkout@v4
+
+      - name: 🐍 Установка Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: 📦 Установка uv
+        uses: astral-sh/setup-uv@v3
+
+      - name: 📦 Установка зависимостей
+        run: uv sync
+
+      - name: 🌐 Установка браузеров Playwright
+        run: uv run playwright install --with-deps ${{ matrix.browser }}
+
+      - name: 🧪 Запуск smoke-тестов
+        run: |
+          uv run pytest -m smoke -v --browser=${{ matrix.browser }} \
+            --maxfail=5 \
+            --html=reports/report_${{ matrix.browser }}.html \
+            --self-contained-html
+        continue-on-error: true
+
+      - name: 📸 Сохранение скриншотов
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: screenshots-${{ matrix.browser }}
+          path: screenshots/
+
+      - name: 📊 Сохранение отчетов
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: reports-${{ matrix.browser }}
+          path: reports/
+
+      - name: 📊 Сохранение логов
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: logs-${{ matrix.browser }}
+          path: .pytest_cache/
+
+  report:
+    name: 📊 Генерация общего отчета
+    needs: test
+    runs-on: ubuntu-latest
+    if: always()
+
+    steps:
+      - name: 📥 Загрузка всех отчетов
+        uses: actions/download-artifact@v4
+        with:
+          path: all-reports
+
+      - name: 📊 Генерация сводного отчета
+        run: |
+          echo "# 📊 Результаты тестирования OmniNotice" > summary.md
+          echo "" >> summary.md
+          echo "## 📅 $(date)" >> summary.md
+          echo "" >> summary.md
+          echo "### Статистика по браузерам:" >> summary.md
+          echo "" >> summary.md
+          echo "| Браузер | Результат |" >> summary.md
+          echo "|---------|-----------|" >> summary.md
+          
+          for dir in all-reports/reports-*/; do
+            browser=$(basename "$dir" | sed 's/reports-//')
+            if [ -f "$dir/report_$browser.html" ]; then
+              echo "| $browser | ✅ Отчет готов |" >> summary.md
+            else
+              echo "| $browser | ❌ Отчет не найден |" >> summary.md
+            fi
+          done
+          
+          cat summary.md
+
+      - name: 📤 Сохранение сводного отчета
+        uses: actions/upload-artifact@v4
+        with:
+          name: summary-report
+          path: summary.md

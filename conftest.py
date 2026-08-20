@@ -1,24 +1,24 @@
 import pytest
 import os
-from playwright.sync_api import Page, BrowserContext
+import allure
 from datetime import datetime
+from playwright.sync_api import Page
 
 
 @pytest.fixture(scope="function")
-def page(context: BrowserContext) -> Page:
+def page(context):
     """Создает новую страницу для каждого теста"""
     page = context.new_page()
-    page.set_default_timeout(10000)
+    page.set_default_timeout(15000)
     page.on("pageerror", lambda err: None)
     yield page
     page.close()
 
 
 @pytest.fixture(scope="session")
-def browser_context_args(browser_context_args):
-    """Настройки контекста"""
+def browser_context_args():
+    """Настройки контекста браузера"""
     return {
-        **browser_context_args,
         "viewport": {"width": 1280, "height": 720},
         "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
     }
@@ -36,24 +36,41 @@ def pytest_configure(config):
 
 @pytest.hookimpl(tryfirst=True, hookwrapper=True)
 def pytest_runtest_makereport(item, call):
-    """Делаем скриншот при падении теста"""
+    """Делаем скриншот при падении теста и добавляем в Allure"""
     outcome = yield
     rep = outcome.get_result()
 
-    if rep.when == "call" and rep.failed:
-        if "page" in item.fixturenames:
-            page = item.funcargs["page"]
+    if rep.when == "call":
+        # Добавляем тест в Allure с описанием
+        allure.dynamic.title(item.name)
 
-            # Создаем папку для скриншотов
-            screenshots_dir = "screenshots"
-            os.makedirs(screenshots_dir, exist_ok=True)
+        if rep.failed:
+            # Скриншот при падении
+            if "page" in item.fixturenames:
+                page = item.funcargs["page"]
 
-            # Сохраняем скриншот с именем теста и временем
-            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-            screenshot_path = f"{screenshots_dir}/failed_{item.name}_{timestamp}.png"
+                screenshots_dir = "screenshots"
+                os.makedirs(screenshots_dir, exist_ok=True)
 
-            try:
-                page.screenshot(path=screenshot_path, full_page=True)
-                print(f"\n📸 Скриншот сохранен: {screenshot_path}")
-            except Exception as e:
-                print(f"\n⚠️ Не удалось сохранить скриншот: {e}")
+                timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+                screenshot_path = f"{screenshots_dir}/failed_{item.name}_{timestamp}.png"
+
+                try:
+                    page.screenshot(path=screenshot_path, full_page=True)
+
+                    # Добавляем скриншот в Allure
+                    allure.attach.file(
+                        screenshot_path,
+                        name=f"Скриншот ошибки",
+                        attachment_type=allure.attachment_type.PNG
+                    )
+                    print(f"\n📸 Скриншот сохранен: {screenshot_path}")
+                except Exception as e:
+                    print(f"\n⚠️ Не удалось сохранить скриншот: {e}")
+
+            # Добавляем лог ошибки в Allure
+            allure.attach(
+                str(rep.longrepr),
+                name="Лог ошибки",
+                attachment_type=allure.attachment_type.TEXT
+            )
