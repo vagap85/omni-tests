@@ -8,24 +8,12 @@
 [![uv](https://img.shields.io/badge/uv-0.12+-purple.svg)](https://github.com/astral-sh/uv)
 [![Tests](https://img.shields.io/badge/Tests-19%20passed%2C%202%20skipped-brightgreen.svg)](https://github.com/vagap85/omni-tests/actions)
 [![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-📝 ПОЛНЫЙ README.md (с бейджами)
-markdown
-# 🧪 OmniNotice Автотесты
-
-[![CI](https://github.com/vagap85/omni-tests/actions/workflows/tests.yml/badge.svg)](https://github.com/vagap85/omni-tests/actions/workflows/tests.yml)
-[![Python](https://img.shields.io/badge/Python-3.11+-blue.svg)](https://www.python.org/)
-[![Playwright](https://img.shields.io/badge/Playwright-1.40+-green.svg)](https://playwright.dev/)
-[![Pytest](https://img.shields.io/badge/Pytest-7.0+-orange.svg)](https://pytest.org/)
-[![Allure](https://img.shields.io/badge/Allure-2.32+-red.svg)](https://allurereport.org/)
-[![uv](https://img.shields.io/badge/uv-0.12+-purple.svg)](https://github.com/astral-sh/uv)
-[![Tests](https://img.shields.io/badge/Tests-19%20passed%2C%202%20skipped-brightgreen.svg)](https://github.com/vagap85/omni-tests/actions)
-[![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
 > Автотесты для формы авторизации, регистрации и восстановления пароля на сайте [OmniNotice](https://omni.skroy.ru/login)
 
 ---
 
-## 📊 Статус тестов
+## 📊Статус тестов
 
 | Браузер | Статус |
 |---------|--------|
@@ -37,7 +25,7 @@ markdown
 
 ---
 
-## 📋 Содержание
+### 📋Содержание
 
 - [Технологии](#технологии)
 - [Структура проекта](#структура-проекта)
@@ -49,85 +37,78 @@ markdown
 
 ---
 
-## 🛠️ Технологии
+## 🛠️Технологии
 
 | Инструмент | Версия | Назначение |
 |------------|--------|------------|
 | **Python** | 3.11+ | Язык программирования |
 | **Playwright** | 1.40+ | Фреймворк для тестирования UI |
 | **Pytest** | 7.0+ | Фреймворк для тестов |
-| **Allure** | 2.32+ | Красивые отчеты |
+| **Allure** | 2.32+ | Отчеты |
 | **uv** | 0.12+ | Менеджер пакетов |
 | **Page Object Model** | - | Архитектура тестов |
 
 ---
 
-## 📁 Структура проекта
-omni-tests/
-├── .github/
-│ └── workflows/
-│ └── tests.yml # CI/CD пайплайн
-├── pages/
-│ ├── init.py
-│ ├── login_page.py # Page Object логина
-│ ├── register_page.py # Page Object регистрации
-│ └── recovery_page.py # Page Object восстановления
-├── tests/
-│ ├── init.py
-│ ├── test_login.py # Тесты логина
-│ ├── test_register.py # Тесты регистрации
-│ ├── test_recovery.py # Тесты восстановления
-│ ├── test_smoke_simple.py # Smokе-тесты
-│ └── test_login_parametrized.py # Параметризованные тесты
-├── screenshots/ # Скриншоты при падениях
-├── conftest.py # Настройки pytest
-├── pyproject.toml # Зависимости проекта
-├── .env # Переменные окружения
-├── run.ps1 # Скрипт запуска
-└── README.md # Документация
-
-text
+## 📁Структура проекта
+omni-tests/<br>
+├── .github/<br>
+│ └── workflows/<br>
+│ └── tests.yml # CI/CD пайплайн<br>
+├── pages/<br>
+│ ├── init.py<br>
+│ ├── login_page.py # Page Object логина<br>
+│ ├── register_page.py # Page Object регистрации<br>
+│ └── recovery_page.py # Page Object восстановления<br>
+├── tests/<br>
+│ ├── init.py<br>
+│ ├── test_login.py # Тесты логина<br>
+│ ├── test_register.py # Тесты регистрации<br>
+│ ├── test_recovery.py # Тесты восстановления<br>
+│ ├── test_smoke_simple.py # Smokе-тесты<br>
+│ └── test_login_parametrized.py # Параметризованные тесты<br>
+├── screenshots/ # Скриншоты при падениях<br>
+├── conftest.py # Настройки pytest<br>
+├── pyproject.toml # Зависимости проекта<br>
+├── .env # Переменные окружения<br>
+├── run.ps1 # Скрипт запуска<br>
+└── README.md # Документация<br>
 
 ---
 
-## 🚀 Установка
+### 🚀Установка
 
 ### 1. Клонировать репозиторий
-```bash
 git clone https://github.com/vagap85/omni-tests.git
 cd omni-tests
-2. Установить uv (менеджер пакетов)
-powershell
+### 2. Установить uv (менеджер пакетов)
 # Windows
-powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
+-ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
 
 # Linux/Mac
 curl -LsSf https://astral.sh/uv/install.sh | sh
-3. Установить зависимости
-powershell
+### 3. Установить зависимости
 uv sync
-4. Установить браузеры Playwright
-powershell
+### 4. Установить браузеры Playwright
 uv run playwright install
-5. Настроить .env файл
+### 5. Настроить .env файл
 Создайте .env с тестовыми данными:
 
 env
 TEST_USER_LOGIN=q@q.co
 TEST_USER_PASSWORD=q
 BASE_URL=https://omni.skroy.ru
-🏃 Запуск тестов
+### 🏃Запуск тестов
 Быстрый запуск (с отчетом)
-powershell
 .\run.ps1
 Запуск всех тестов
-powershell
+
 uv run pytest -v
 Запуск с отображением браузера
-powershell
+
 uv run pytest -v --headed --slowmo=500
 Запуск конкретной группы
-powershell
+
 # Только логин
 uv run pytest -m login -v
 
@@ -139,14 +120,14 @@ uv run pytest -m smoke -v
 Параллельный запуск
 powershell
 uv run pytest -v -n auto
-📊 Отчеты
+### 📊Отчеты
 HTML отчет
-powershell
+
 uv run pytest -v --html=report.html --self-contained-html
 Отчет сохраняется в report.html
 
 Allure отчет
-powershell
+
 # Генерация результатов
 uv run pytest -v --alluredir=allure-results
 
@@ -155,7 +136,7 @@ allure generate allure-results -o allure-report --clean
 
 # Открыть отчет
 allure open allure-report
-📈 Результаты
+### 📈Результаты
 Категория	Тестов	Статус
 Логин	6	✅ Все проходят
 Регистрация	9	✅ Все проходят
@@ -165,7 +146,7 @@ Smoke	3	✅ Все проходят
 Восстановление	2	⏸️ Пропущены
 Итого: 19 тестов проходят, 2 пропущены 🎉
 
-🔄 CI/CD
+### 🔄CI/CD
 Проект настроен на автоматический запуск в GitHub Actions:
 
 ✅ Запуск при пуше в main/develop
@@ -244,5 +225,5 @@ Pytest - лучший фреймворк для тестов в Python
 
 uv - супер-быстрый менеджер пакетов
 
-🚀 Сделано с ❤️ для автоматизации тестирования OmniNotice
+
 
