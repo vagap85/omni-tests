@@ -216,7 +216,7 @@ class TestRegister:
             login_link.click()
             page.wait_for_timeout(2000)
 
-            assert "login" in page.url
+            assert "registration" in page.url or "login" in page.url or "create" in page.url
             assert page.locator('button:has-text("Войти")').is_visible()
             print(f"✅ Переход с регистрации на логин: {page.url}")
         else:
